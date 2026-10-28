@@ -1,0 +1,13 @@
+{
+  "name": "harden-cookies-tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node app.test.mjs",
+    "debug": "npx @gcoredev/fastedge-test --project-dir .."
+  },
+  "devDependencies": {
+    "@gcoredev/fastedge-test": "0.2.6"
+  }
+}

@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  # Works in any copy of this repo — standard actions only (H1a, T25c).
+  build-test:
+    runs-on: ubuntu-latest
+    env:
+      COMPILER: viridiscomms/fastedge-apps-compiler:0.0.2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test
+        run: docker run --rm -v "$PWD":/work -w /work "$COMPILER" cargo test --target x86_64-unknown-linux-gnu
+      - name: Build
+        run: docker run --rm -v "$PWD":/work -w /work "$COMPILER" cargo build --release --target wasm32-wasip1
+      # Black-box suite runs the built .wasm, so it comes after the build.
+      - name: fastedge-test
+        working-directory: fastedge-test
+        run: npm ci --no-audit --no-fund && npm test
+
+  # Gcore-only checks; skipped in copies (H1a, T30).
+  org:
+    if: github.repository_owner == 'godronus-org' && github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: read
+    uses: godronus-org/toolkit/.github/workflows/pr-checks.yaml@v1

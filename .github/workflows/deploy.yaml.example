@@ -1,0 +1,30 @@
+# Deploy this filter as your own FastEdge app.
+# 1. Rename this file to deploy.yaml.
+# 2. Add a repository secret GCORE_API_KEY (your Gcore API token).
+# 3. Push to main.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: >
+          docker run --rm -v "$PWD":/work -w /work viridiscomms/fastedge-apps-compiler:0.0.2
+          cargo build --release --target wasm32-wasip1
+      - uses: gcore-github-actions/fastedge/deploy-app@v1
+        with:
+          api_key: ${{ secrets.GCORE_API_KEY }}
+          wasm_file: target/wasm32-wasip1/release/harden_cookies.wasm
+          app_name: harden-cookies
+          comment: Set-Cookie hardening CDN filter
+          env: "{}"

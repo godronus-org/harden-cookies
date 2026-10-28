@@ -1,0 +1,4 @@
+target/
+wasm/
+*.wasm
+fastedge-test/node_modules/

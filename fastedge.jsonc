@@ -1,0 +1,26 @@
+{
+  "$schema": "https://raw.githubusercontent.com/godronus-org/toolkit/v1/schema/fastedge.schema.json",
+  // Gcore-internal deploy config. If you copied this repo, it does nothing for
+  // you — delete it, and see .github/workflows/deploy.yaml.example instead.
+  "kind": "template",
+  "runtime": "cdn-filter",
+  "language": "rust",
+  "category": ["security"],
+
+  "template": {
+    "name": "gdr-Harden the cookies",
+    "description": "CDN app template that hardens Set-Cookie response headers by adding security attributes (Secure, HttpOnly, SameSite=Strict) to targeted cookies.",
+    "params": [
+      { "name": "COOKIE_NAME", "data_type": "string", "descr": "Name of the cookie to harden (or '*' to match all cookies)", "mandatory": true, "metadata": { "default_value": "*" } },
+      { "name": "HTTPONLY", "data_type": "boolean", "descr": "Add 'HttpOnly' attribute", "mandatory": true, "metadata": { "default_value": "false" } },
+      { "name": "SAMESITE", "data_type": "boolean", "descr": "Add 'SameSite=Strict' attribute and value", "mandatory": true, "metadata": { "default_value": "false" } },
+      { "name": "SECURE", "data_type": "boolean", "descr": "Add 'Secure' attribute", "mandatory": true, "metadata": { "default_value": "false" } }
+    ]
+  },
+
+  // POC: test accounts only (F17); names start with "gdr-" (F25).
+  "environments": {
+    "preprod": { "template": { "name": "gdr-Harden the cookies - preprod" } },
+    "prod": {}
+  }
+}
